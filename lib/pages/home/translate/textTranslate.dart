@@ -204,8 +204,7 @@ class _TextTranslateState extends State<TextTranslate> {
                                   onExit: (_) =>
                                       setState(() => _isHoveringPaste = false),
                                   child: GestureDetector(
-                                    onTap:
-                                        _pasteFromClipboard, // Using paste function
+                                    onTap: _pasteFromClipboard,
                                     child: Row(
                                       children: [
                                         Text(
@@ -219,7 +218,7 @@ class _TextTranslateState extends State<TextTranslate> {
                                         ),
                                         SizedBox(width: 12),
                                         Icon(
-                                          Icons.paste, // Using paste icon
+                                          Icons.paste,
                                           color: _isHoveringPaste
                                               ? Colors.blue
                                               : Colors.black,
@@ -236,9 +235,8 @@ class _TextTranslateState extends State<TextTranslate> {
                                   onExit: (_) => setState(
                                       () => _isHoveringCopyInput = false),
                                   child: GestureDetector(
-                                    onTap: () => _copyToClipboard(
-                                        _textController
-                                            .text), // Copy from input
+                                    onTap: () =>
+                                        _copyToClipboard(_textController.text),
                                     child: Row(
                                       children: [
                                         Text(
@@ -277,6 +275,55 @@ class _TextTranslateState extends State<TextTranslate> {
                                   ),
                                 ),
                               ),
+                            ),
+                            SizedBox(
+                                height:
+                                    20), // Jarak antara TextField dan Button
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Color(0xFF01A9F2), // Warna atas
+                                        Color(0xFF172D9D), // Warna bawah
+                                      ],
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: TextButton.icon(
+                                    onPressed: () {
+                                      // Fungsi untuk tombol "Terjemahkan"
+                                    },
+                                    icon: Icon(
+                                      Icons.translate,
+                                      color: Colors.white,
+                                      size: 16,
+                                    ),
+                                    label: Text(
+                                      'Terjemahkan',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    style: TextButton.styleFrom(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 8, horizontal: 12),
+                                      backgroundColor: Colors
+                                          .transparent, // Transparan agar gradient terlihat
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                            12), // Sama dengan border gradient
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -378,8 +425,8 @@ class _TextTranslateState extends State<TextTranslate> {
                           children: [
                             // Tampilkan "Tulisan" atau "Isyarat" tergantung pada posisi
                             _isTulisanFirst
-                                ? _buildTulisanButton()
-                                : _buildIsyaratButton(),
+                                ? _buildIsyaratButton()
+                                : _buildTulisanButton(),
 
                             MouseRegion(
                               onEnter: (_) {
@@ -429,8 +476,8 @@ class _TextTranslateState extends State<TextTranslate> {
                               ),
                             ),
                             _isTulisanFirst
-                                ? _buildIsyaratButton()
-                                : _buildTulisanButton(),
+                                ? _buildTulisanButton()
+                                : _buildIsyaratButton(),
                           ],
                         ),
                       ],
@@ -469,8 +516,6 @@ class _TextTranslateState extends State<TextTranslate> {
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Row(
           children: [
-            Icon(Icons.text_fields, color: Colors.white),
-            SizedBox(width: 12),
             Text(
               'Tulisan',
               style: TextStyle(
@@ -478,6 +523,8 @@ class _TextTranslateState extends State<TextTranslate> {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            SizedBox(width: 12),
+            Icon(Icons.text_fields, color: Colors.white),
           ],
         ),
       ),
@@ -504,6 +551,8 @@ class _TextTranslateState extends State<TextTranslate> {
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: Row(
             children: [
+              Icon(Icons.pan_tool, color: Colors.white),
+              SizedBox(width: 12),
               Text(
                 'Isyarat',
                 style: TextStyle(
@@ -511,8 +560,6 @@ class _TextTranslateState extends State<TextTranslate> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(width: 12),
-              Icon(Icons.pan_tool, color: Colors.white),
             ],
           ),
         ),
