@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Clipboard
+import 'package:signify/pages/home/dictionary/dictionary.dart';
 import '../../../components/bottom_bar.dart';
 import '../../../pages/home/profile/profile.dart';
 import '../../../pages/home/guide/guide.dart';
@@ -33,33 +34,14 @@ class _TextTranslateState extends State<TextTranslate> {
   Widget build(BuildContext context) {
     int _selectedIndex = 2;
 
-    void _onItemTapped(int index) {
-      switch (index) {
-        case 0:
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => const Home()));
-          break;
-        case 1:
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => const Guide()));
-          break;
-        case 2:
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const TextTranslate()));
-          break;
-        case 3:
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const History()));
-          break;
-        case 4:
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const Profile()));
-          break;
-      }
-      setState(() {
-        _selectedIndex = index; // Update selected index
-      });
-    }
+    // Daftar halaman
+    final List<Widget> pages = [
+      const Home(),
+      const Dictionary(),
+      const SignTranslate(),
+      const History(),
+      const Profile(),
+    ];
 
     // Copy text to clipboard
     void _copyToClipboard(String text) {
@@ -93,18 +75,20 @@ class _TextTranslateState extends State<TextTranslate> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      body: SingleChildScrollView(
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFFC2E8FF),
-                Color(0xFF6395B4),
-              ],
-            ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFC2E8FF),
+              Color(0xFF6395B4),
+            ],
           ),
+        ),
+        child: SingleChildScrollView(
           child: Column(
             children: [
               AppBar(
@@ -128,20 +112,12 @@ class _TextTranslateState extends State<TextTranslate> {
                           icon: const Icon(Icons.more_vert, size: 30),
                           itemBuilder: (context) => [
                             PopupMenuItem(
-                                value: 'profile', child: Text('Profil')),
-                            PopupMenuItem(
                                 value: 'settings', child: Text('Pengaturan')),
                             PopupMenuItem(
                                 value: 'help', child: Text('Bantuan')),
                           ],
                           onSelected: (value) {
                             switch (value) {
-                              case 'profile':
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => const Profile()));
-                                break;
                               case 'settings':
                                 // Add settings page here
                                 break;
@@ -156,13 +132,6 @@ class _TextTranslateState extends State<TextTranslate> {
                   ],
                 ),
                 backgroundColor: Colors.transparent,
-                elevation: 0,
-                leading: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(Icons.arrow_back),
-                ),
               ),
               Container(
                 margin: EdgeInsets.all(20),
@@ -492,7 +461,12 @@ class _TextTranslateState extends State<TextTranslate> {
       ),
       bottomNavigationBar: BottomBar(
         selectedIndex: _selectedIndex,
-        onItemTapped: _onItemTapped,
+        onItemTapped: (index) {
+          setState(() {
+            _selectedIndex = index; // Update index yang dipilih
+          });
+        },
+        pages: pages, // Kirim daftar halaman ke BottomBar
       ),
     );
   }

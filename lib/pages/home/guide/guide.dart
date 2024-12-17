@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:signify/pages/home/guide/guide_detail.dart';
 import '../../../components/bottom_bar.dart';
 import '../translate/signTranslate.dart';
 import '../../../pages/home/history/history.dart';
 import '../../../pages/home/profile/profile.dart';
 import '../../../pages/home/home.dart';
-import '../../../components/unavailable.dart'; // Import the snackbar component
+import '../../../components/unavailable.dart'; // Pastikan file unavailable.dart diimpor
 
 class Guide extends StatefulWidget {
   const Guide({super.key});
@@ -18,47 +19,18 @@ class _GuideState extends State<Guide> {
   Widget build(BuildContext context) {
     int _selectedIndex = 1;
 
-    void _onItemTapped(int index) {
-      switch (index) {
-        case 0:
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const Home()),
-          );
-          break;
-        case 1:
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const Guide()),
-          );
-          break;
-        case 2:
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const SignTranslate()),
-          );
-          break;
-        case 3:
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const History()),
-          );
-          break;
-        case 4:
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const Profile()),
-          );
-          break;
-      }
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
+    // Daftar halaman
+    final List<Widget> pages = [
+      const Home(),
+      const Guide(),
+      const SignTranslate(),
+      const History(),
+      const Profile(),
+    ];
 
     // Sample data for the cards
     final List<Map<String, dynamic>> cardData = [
-      {'title': 'Panduan Aplikasi Signify', 'image': 'assets/images/image1.png', 'page': Page1()},
+      {'title': 'Panduan Aplikasi Signify', 'image': 'assets/images/image1.png', 'page': GuideDetail()},
       {'title': 'Panduan Memahami Bahasa Isyarat', 'image': 'assets/images/image2.png', 'page': Page2()},
       {'title': 'Panduan Penerjemahan', 'image': 'assets/images/image3.png', 'page': null}, // Page null for Card 3
       {'title': 'Panduan Aksesibilitas', 'image': 'assets/images/image4.png', 'page': Page4()},
@@ -113,15 +85,23 @@ class _GuideState extends State<Guide> {
                     },
                     child: GestureDetector(
                       onTap: () {
-                        // Show snackbar for Card 3
-                        if (index == 2) {
-                          unavailable(context);
-                        } else if (cardData[index]['page'] != null) {
-                          // Navigate to the respective page if not Card 3
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => cardData[index]['page']),
-                          );
+                        // Gunakan switch case untuk menentukan card mana yang menampilkan unavailable()
+                        switch (index) {
+                          case 1: // Card kedua
+                          case 2: // Card ketiga
+                          case 3: // Card keempat
+                          case 4: // Card kelima
+                            unavailable(context); // Tampilkan unavailable untuk card tersebut
+                            break;
+                          default:
+                            if (cardData[index]['page'] != null) {
+                              // Navigasi ke halaman yang sesuai
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => cardData[index]['page']),
+                              );
+                            }
+                            break;
                         }
                       },
                       child: Card(
@@ -175,19 +155,14 @@ class _GuideState extends State<Guide> {
       ),
       bottomNavigationBar: BottomBar(
         selectedIndex: _selectedIndex,
-        onItemTapped: _onItemTapped,
+        onItemTapped: (index) {
+          setState(() {
+            _selectedIndex = index; // Update index yang dipilih
+          });
+        },
+        pages: pages,
+        disableActiveColor: true,
       ),
-    );
-  }
-}
-
-// Example target pages
-class Page1 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Page 1")),
-      body: Center(child: Text("Content for Page 1")),
     );
   }
 }

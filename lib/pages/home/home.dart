@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:signify/pages/home/lesson/lesson.dart';
+import 'package:signify/pages/home/translate/textTranslate.dart';
 import '../auth/login.dart';
 import '../../components/bottom_bar.dart';
-import '../../pages/home/home.dart';
 import '../../pages/home/guide/guide.dart';
 import '../../pages/home/history/history.dart';
 import '../../pages/home/profile/profile.dart';
+import '../../pages/home/dictionary/dictionary.dart';
 import 'translate/signTranslate.dart';
 
 class Home extends StatefulWidget {
@@ -17,48 +19,25 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _selectedIndex = 0;
 
-  void _onItemTapped(int index) {
-    switch (index) {
-      case 0:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const Home()),
-        );
-        break;
-      case 1:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const Guide()),
-        );
-        break;
-      case 2:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const SignTranslate()),
-        );
-        break;
-      case 3:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const History()),
-        );
-        break;
-      case 4:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const Profile()),
-        );
-        break;
-    }
-    setState(() {
-      _selectedIndex = index;
-    });
+  // Daftar halaman
+  final List<Widget> pages = [
+    const Home(),
+    const Dictionary(),
+    const SignTranslate(),
+    const History(),
+    const Profile(),
+  ];
+
+  void _selectMenuItem(String value) {
+    // Implementasi untuk menu popup jika diperlukan
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -109,11 +88,26 @@ class _HomeState extends State<Home> {
                     const SizedBox(width: 20),
                     Column(
                       children: [
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.notifications),
-                          color: Colors.blue,
-                          iconSize: 36,
+                        PopupMenuButton<String>(
+                          icon: const Icon(Icons.notifications,
+                              color: Colors.blue, size: 36),
+                          onSelected: _selectMenuItem,
+                          itemBuilder: (BuildContext context) {
+                            return [
+                              const PopupMenuItem<String>(
+                                value: 'option1',
+                                child: Text('Option 1'),
+                              ),
+                              const PopupMenuItem<String>(
+                                value: 'option2',
+                                child: Text('Option 2'),
+                              ),
+                              const PopupMenuItem<String>(
+                                value: 'option3',
+                                child: Text('Option 3'),
+                              ),
+                            ];
+                          },
                         ),
                       ],
                     ),
@@ -127,17 +121,61 @@ class _HomeState extends State<Home> {
                       'Mulai Ketik',
                       'Panduan',
                       'Kamus Isyarat',
-                      'Pelajari Gerakan',
+                      'Pelajaran Isyarat',
                     ];
 
                     return GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DetailPage(index: index),
-                          ),
-                        );
+                        switch (index) {
+                          case 0: // Mulai Gerakkan
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const SignTranslate(),
+                              ),
+                            );
+                            break;
+                          case 1: // Mulai Gerakkan
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const TextTranslate(),
+                              ),
+                            );
+                            break;
+                          case 2: // Panduan
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Guide(),
+                              ),
+                            );
+                            break;
+                          case 3: // Kamus Isyarat
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Dictionary(),
+                              ),
+                            );
+                            break;
+                          case 4: // Kamus Isyarat
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Lesson(),
+                              ),
+                            );
+                            break;
+                          default: // Kartu lainnya
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DetailPage(index: index),
+                              ),
+                            );
+                            break;
+                        }
                       },
                       child: Container(
                         margin: const EdgeInsets.symmetric(vertical: 10),
@@ -158,7 +196,7 @@ class _HomeState extends State<Home> {
                           child: Row(
                             children: [
                               Expanded(
-                                flex: 6, // 60% of the Row width
+                                flex: 6,
                                 child: Text(
                                   cardTexts[index],
                                   style: const TextStyle(
@@ -169,7 +207,7 @@ class _HomeState extends State<Home> {
                               ),
                               const SizedBox(width: 16),
                               Expanded(
-                                flex: 4, // 40% of the Row width
+                                flex: 4,
                                 child: Image.asset(
                                   '../../assets/image${index + 1}.png',
                                   height: 24,
@@ -190,7 +228,12 @@ class _HomeState extends State<Home> {
       ),
       bottomNavigationBar: BottomBar(
         selectedIndex: _selectedIndex,
-        onItemTapped: _onItemTapped,
+        onItemTapped: (index) {
+          setState(() {
+            _selectedIndex = index; // Update index yang dipilih
+          });
+        },
+        pages: pages, // Kirim daftar halaman ke BottomBar
       ),
     );
   }

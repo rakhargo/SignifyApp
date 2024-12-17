@@ -1,15 +1,19 @@
-// bottom_nav_bar.dart
+// bottom_bar.dart
 
 import 'package:flutter/material.dart';
 
 class BottomBar extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onItemTapped;
+  final List<Widget> pages;
+  final bool disableActiveColor; // Parameter baru
 
   const BottomBar({
     Key? key,
     required this.selectedIndex,
     required this.onItemTapped,
+    required this.pages,
+    this.disableActiveColor = false, 
   }) : super(key: key);
 
   @override
@@ -17,14 +21,14 @@ class BottomBar extends StatelessWidget {
     return Container(
       color: const Color(0xFF042558),
       child: BottomNavigationBar(
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Beranda',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
-            label: 'Panduan',
+            label: 'Kamus',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.translate_rounded),
@@ -40,9 +44,15 @@ class BottomBar extends StatelessWidget {
           ),
         ],
         currentIndex: selectedIndex,
-        selectedItemColor: Colors.blue,
+        selectedItemColor: disableActiveColor ? Colors.white : Colors.blue, // Tidak aktif jika disableActiveColor
         unselectedItemColor: Colors.white,
         onTap: (index) {
+          if (index >= 0 && index < pages.length) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => pages[index]),
+            );
+          }
           onItemTapped(index);
         },
         type: BottomNavigationBarType.fixed,

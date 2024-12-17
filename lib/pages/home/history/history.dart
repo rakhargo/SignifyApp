@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:signify/pages/home/dictionary/dictionary.dart';
 import '../../../components/bottom_bar.dart';
 import '../translate/signTranslate.dart';
 import '../../../pages/home/profile/profile.dart';
@@ -20,35 +21,14 @@ class _HistoryState extends State<History> {
   bool _isHoveringPaste = false;
   bool _isHoveringCopyInput = false; // For hover effect on copy input button
 
-  void _onItemTapped(int index) {
-    switch (index) {
-      case 0:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const Home()),
-        );
-        break;
-      case 1:
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const Guide()));
-        break;
-      case 2:
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const SignTranslate()));
-        break;
-      case 3:
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const History()));
-        break;
-      case 4:
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const Profile()));
-        break;
-    }
-    setState(() {
-      _selectedIndex = index; // Update index yang dipilih
-    });
-  }
+  // Daftar halaman
+  final List<Widget> pages = [
+    const Home(),
+    const Dictionary(),
+    const SignTranslate(),
+    const History(),
+    const Profile(),
+  ];
 
   // Copy text to clipboard
   void _copyToClipboard(String text) {
@@ -77,18 +57,38 @@ class _HistoryState extends State<History> {
         child: Column(
           children: [
             AppBar(
-              title: const Text(
-                'Riwayat',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Riwayat Terjemahan',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Row(
+                    children: [
+                      PopupMenuButton(
+                        icon: const Icon(Icons.more_vert, size: 30),
+                        itemBuilder: (context) => [
+                          PopupMenuItem(value: 'settings', child: Text('Pengaturan')),
+                          PopupMenuItem(value: 'help', child: Text('Bantuan')),
+                        ],
+                        onSelected: (value) {
+                          switch (value) {
+                            case 'settings':
+                              // Tambahkan halaman pengaturan di sini
+                              break;
+                            case 'help':
+                              // Tambahkan halaman bantuan di sini
+                              break;
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ],
               ),
               backgroundColor: Colors.transparent,
-              elevation: 0, // Hilangkan bayangan AppBar
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.arrow_back),
-              ),
+              elevation: 0,
             ),
             Container(
               margin: const EdgeInsets.all(12), // Margin 12px
@@ -119,22 +119,29 @@ class _HistoryState extends State<History> {
                   Container(
                     margin: const EdgeInsets.only(top: 12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFC2E8FF), // Background color #C2E8FF
-                      borderRadius: BorderRadius.circular(12), // Border radius 12px
+                      color:
+                          const Color(0xFFC2E8FF), // Background color #C2E8FF
+                      borderRadius:
+                          BorderRadius.circular(12), // Border radius 12px
                     ),
-                    padding: const EdgeInsets.all(12), // Padding for inner content
+                    padding:
+                        const EdgeInsets.all(12), // Padding for inner content
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         MouseRegion(
                           cursor: SystemMouseCursors.click,
-                          onEnter: (_) => setState(() => _isHoveringCopyInput = true),
-                          onExit: (_) => setState(() => _isHoveringCopyInput = false),
+                          onEnter: (_) =>
+                              setState(() => _isHoveringCopyInput = true),
+                          onExit: (_) =>
+                              setState(() => _isHoveringCopyInput = false),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end, // Align to the right
+                            mainAxisAlignment:
+                                MainAxisAlignment.end, // Align to the right
                             children: [
                               GestureDetector(
-                                onTap: () => _copyToClipboard(_textController.text), // Copy from input
+                                onTap: () => _copyToClipboard(
+                                    _textController.text), // Copy from input
                                 child: Row(
                                   children: [
                                     Text(
@@ -186,7 +193,12 @@ class _HistoryState extends State<History> {
       ),
       bottomNavigationBar: BottomBar(
         selectedIndex: _selectedIndex,
-        onItemTapped: _onItemTapped,
+        onItemTapped: (index) {
+          setState(() {
+            _selectedIndex = index; // Update index yang dipilih
+          });
+        },
+        pages: pages, // Kirim daftar halaman ke BottomBar
       ),
     );
   }

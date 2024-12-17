@@ -4,17 +4,20 @@ import '../onboarding/onboarding3.dart';
 import 'register.dart';
 import '../home/home.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class ResetPassword extends StatefulWidget {
+  const ResetPassword({super.key});
 
   @override
-  _LoginState createState() => _LoginState();
+  _ResetPasswordState createState() => _ResetPasswordState();
 }
 
-class _LoginState extends State<Login> {
+class _ResetPasswordState extends State<ResetPassword> {
   Color _forgotPasswordColor = Colors.blue; // Warna awal
   Color _registerNowColor = Colors.blue; // Warna awal untuk "Daftar Sekarang!"
   bool _isPasswordVisible = false; // State untuk visibilitas password
+  bool _isConfirmationPasswordVisible = false; // State untuk visibilitas password
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _confirmationPasswordController = TextEditingController();
 
   void _onForgotPasswordTap() {
     setState(() {
@@ -32,6 +35,15 @@ class _LoginState extends State<Login> {
     // Navigasi ke halaman yang sesuai untuk pendaftaran
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => Register())); // Ganti dengan halaman pendaftaran yang sesuai
+  }
+
+  void _resetFields() {
+    _passwordController.clear();
+    _confirmationPasswordController.clear();
+    setState(() {
+      _isPasswordVisible = false;
+      _isConfirmationPasswordVisible = false;
+    });
   }
 
   @override
@@ -59,7 +71,7 @@ class _LoginState extends State<Login> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Masuk Akun',
+                        'Reset Password',
                         style: TextStyle(fontSize: 16),
                       ),
                       const SizedBox(height: 20),
@@ -106,14 +118,16 @@ class _LoginState extends State<Login> {
                     ],
                   )
                 ],
-              ),SizedBox(height: 20),
+              ),
+              SizedBox(height: 20),
               const Text(
-                'Sebelum mulai. Yuk masuk ke akunmu!',
+                'Masukkan Password baru akunmu',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
-              ),SizedBox(height: 20),
+              ),
+              SizedBox(height: 20),
               // Baris 2: Gambar
               Center(
                 child: Container(
@@ -129,7 +143,8 @@ class _LoginState extends State<Login> {
                   ),
                   child: const Center(child: Text('Ini Gambar!')),
                 ),
-              ),SizedBox(height: 20),
+              ),
+              SizedBox(height: 32),
               // Form Email dan Password
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,42 +161,11 @@ class _LoginState extends State<Login> {
                         )
                       ],
                     ),
-                    child: const TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        filled: true,
-                        fillColor: Colors.transparent,
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                          borderSide: BorderSide(color: Colors.transparent),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                          borderSide: BorderSide(color: Colors.blue),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          offset: Offset(0, 4),
-                          blurRadius: 4,
-                        )
-                      ],
-                    ),
                     child: TextField(
-                      obscureText:
-                          !_isPasswordVisible, // Menggunakan state untuk visibilitas
+                      controller: _passwordController,
+                      obscureText: !_isPasswordVisible,
                       decoration: InputDecoration(
-                        labelText: 'Password',
+                        labelText: 'Password Baru',
                         filled: true,
                         fillColor: Colors.transparent,
                         enabledBorder: OutlineInputBorder(
@@ -209,34 +193,55 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: MouseRegion(
-                      onEnter: (_) {
-                        setState(() {
-                          _forgotPasswordColor = Colors.lightBlueAccent; // Ubah warna saat hover
-                        });
-                      },
-                      onExit: (_) {
-                        setState(() {
-                          _forgotPasswordColor = Colors.blue; // Kembalikan warna saat tidak hover
-                        });
-                      },
-                      child: GestureDetector(
-                        onTap: _onForgotPasswordTap,
-                        child: Text(
-                          'Lupa Password?',
-                          style: TextStyle(
-                            color: _forgotPasswordColor,
+                  ),SizedBox(height: 20),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          offset: Offset(0, 4),
+                          blurRadius: 4,
+                        )
+                      ],
+                    ),
+                    child: TextField(
+                      controller: _confirmationPasswordController,
+                      obscureText: !_isConfirmationPasswordVisible,
+                      decoration: InputDecoration(
+                        labelText: 'Konfirmasi Password Baru',
+                        filled: true,
+                        fillColor: Colors.transparent,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          borderSide: BorderSide(color: Colors.transparent),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          borderSide: BorderSide(color: Colors.blue),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 15, horizontal: 20),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isConfirmationPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                           ),
+                          onPressed: () {
+                            setState(() {
+                              _isConfirmationPasswordVisible =
+                                  !_isConfirmationPasswordVisible; // Toggle visibility
+                            });
+                          },
                         ),
                       ),
                     ),
                   ),
                 ],
-              ),SizedBox(height: 20),
+              ),
+              SizedBox(height: 32),
               // Baris 3: Tombol
               Row(
                 children: [
@@ -244,10 +249,7 @@ class _LoginState extends State<Login> {
                     flex: 25,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Home()),
-                        );
+                        _resetFields(); // Reset inputan
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF258BD6),
@@ -257,7 +259,7 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                       child: const Text(
-                        'Lewati',
+                        'Reset',
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.white,
@@ -283,7 +285,7 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                       child: const Text(
-                        'Masuk',
+                        'Simpan Perubahan',
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.white,
@@ -292,32 +294,7 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                 ],
-              ),SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Belum Punya Akun? '),
-                  MouseRegion(
-                    onEnter: (_) {
-                      setState(() {
-                        _registerNowColor = Colors.lightBlue; // Ubah warna saat hover
-                      });
-                    },
-                    onExit: (_) {
-                      setState(() {
-                        _registerNowColor = Colors.blue; // Kembalikan warna saat tidak hover
-                      });
-                    },
-                    child: GestureDetector(
-                      onTap: _onRegisterNowTap,
-                      child: Text(
-                        'Daftar Sekarang!',
-                        style: TextStyle(color: _registerNowColor),
-                      ),
-                    ),
-                  )
-                ],
-              ),SizedBox(height: 20),
+              ),
             ],
           ),
         ),

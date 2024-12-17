@@ -1,50 +1,72 @@
 import 'package:flutter/material.dart';
-import 'onboarding3.dart';
+import 'package:signify/pages/auth/reset_password.dart';
+import '../onboarding/onboarding3.dart';
+import 'register.dart';
+import '../home/home.dart';
 
-class Onboarding2 extends StatelessWidget {
-  const Onboarding2({super.key});
+class VerificationCode extends StatefulWidget {
+  const VerificationCode({super.key});
+
+  @override
+  _VerificationCodeState createState() => _VerificationCodeState();
+}
+
+class _VerificationCodeState extends State<VerificationCode> {
+  Color _VerificationCodePasswordColor = Colors.blue; // Warna awal
+  Color _registerNowColor = Colors.blue; // Warna awal untuk "Daftar Sekarang!"
+  bool _isPasswordVisible = false; // State untuk visibilitas password
+
+  void _onVerificationCodePasswordTap() {
+    setState(() {
+      _VerificationCodePasswordColor = Colors.red; // Ubah warna saat diklik
+    });
+
+    // Navigasi ke halaman selanjutnya
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Onboarding3()),
+    );
+  }
+
+  void _onRegisterNowTap() {
+    // Navigasi ke halaman yang sesuai untuk pendaftaran
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => Register())); // Ganti dengan halaman pendaftaran yang sesuai
+  }
 
   @override
   Widget build(BuildContext context) {
     // Mendapatkan tinggi layar
     final screenHeight = MediaQuery.of(context).size.height;
     // Menghitung tinggi maksimum untuk konten
-    final contentHeight = screenHeight -
-        AppBar().preferredSize.height -
-        48; // Sesuaikan padding sesuai kebutuhan
+    final contentHeight = screenHeight - AppBar().preferredSize.height - 48;
 
-    // Halaman aktif (di sini, Onboarding2)
-    int currentPage =
-        1; // Ganti sesuai halaman (1 untuk Onboarding1, 2 untuk Onboarding2, dst)
-
+    // Halaman aktif
+    int currentPage = 4;
     return Scaffold(
       backgroundColor: const Color(0xFFC2E8FF),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 24), // Margin horizontal untuk seluruh body
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: Column(
-            mainAxisAlignment:
-                MainAxisAlignment.spaceBetween, // Mengatur spasi antara elemen
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start, // Mengatur teks rata kiri
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Selamat Datang di',
+                        'Verifikasi Kode',
                         style: TextStyle(fontSize: 16),
                       ),
-                      const SizedBox(height: 16), // Menambahkan jarak di sini
+                      const SizedBox(height: 20),
                       Row(
                         children: <Widget>[
                           Image.asset(
-                            '../../assets/logo.png', // Pastikan path yang benar
+                            '../../assets/logo.png',
                             height: 64,
                             width: 64,
                           ),
@@ -74,75 +96,113 @@ class Onboarding2 extends StatelessWidget {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: index == currentPage - 1
-                                  ? const Color(0xFF052659)
+                                  ? Color(0xFF052659)
                                   : Color(0XFF5481B2),
                             ),
                           );
                         }),
                       ),
-                      const SizedBox(
-                          height: 20), // Spacing antara indikator dan tombol
+                      const SizedBox(height: 20),
                     ],
-                  ),
+                  )
                 ],
               ),SizedBox(height: 20),
               const Text(
-                'Membantu Anda memahami bahasa isyarat dengan mudah',
+                'Masukkan kode yang kami kirim di emailmu',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),SizedBox(height: 20),
-              
-          
               // Baris 2: Gambar
               Center(
                 child: Container(
-                  height: contentHeight * 0.65, // Membatasi tinggi gambar
-                  width: double.infinity, // Memenuhi lebar yang tersedia
+                  height: contentHeight * 0.5,
+                  width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.cyan,
                     borderRadius: BorderRadius.circular(12),
                     image: const DecorationImage(
-                      image: AssetImage(
-                          'assets/images/your_image.png'), // Ganti dengan gambar Anda
+                      image: AssetImage('assets/images/your_image.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
                   child: const Center(child: Text('Ini Gambar!')),
                 ),
-              ),
-              const SizedBox(height: 32), 
-          
+              ),SizedBox(height: 20),
+              // Form Email dan Password
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          offset: Offset(0, 4),
+                          blurRadius: 4,
+                        )
+                      ],
+                    ),
+                    child: const TextField(
+                      decoration: InputDecoration(
+                        labelText: 'Kode Verifikasi',
+                        filled: true,
+                        fillColor: Colors.transparent,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          borderSide: BorderSide(color: Colors.transparent),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          borderSide: BorderSide(color: Colors.blue),
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          offset: Offset(0, 4),
+                          blurRadius: 4,
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),SizedBox(height: 20),
               // Baris 3: Tombol
               Row(
                 children: [
                   Expanded(
-                    // Membuat tombol mengisi ruang yang tersedia
+                    flex: 75,
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Onboarding3()),
+                          MaterialPageRoute(builder: (context) => ResetPassword()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color(0xFF0F6BAC), // Ganti amber dengan #0F6BAC
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 15), // Tinggi tombol
+                        backgroundColor: const Color(0xFF0F6BAC),
+                        padding: const EdgeInsets.symmetric(vertical: 15),
                         shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(8), // Sudut membulat
+                          borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: 
-                      
-                      Text(
-                        'Selanjutnya',
+                      child: const Text(
+                        'Submit',
                         style: TextStyle(
-                          fontSize:
-                              16, // Ukuran font yang lebih besar untuk tombol
+                          fontSize: 16,
                           color: Colors.white,
                         ),
                       ),
